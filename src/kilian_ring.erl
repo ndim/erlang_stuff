@@ -50,13 +50,17 @@ start() ->
     start([]).
 
 
-receive_acks([]) ->
+receive_acks(_Timeout, []) ->
     ok;
-receive_acks([Head|Tail]) ->
+receive_acks(Timeout, [Head|Tail]) ->
     receive
-        {ack, Head} -> ok
-    end,
-    receive_acks(Tail).
+        {ack, Head} -> receive_acks(Timeout, Tail)
+        after Timeout  -> timeout
+    end.
+
+
+receive_acks(Messages) ->
+    receive_acks(1000, Messages).
 
 
 start([]) ->
@@ -69,10 +73,12 @@ start([NumStr]) ->
     %% Send a few messages through the chain
     Messages = ['moo', ['foo', 'bar'], "blah", {42,23}, 'that\'s it!'],
     [ First ! {message, self(), M} || M <- Messages ],
-    receive_acks(Messages),
-    io:format("All messages have crossed the process chain.~n", []),
+    case receive_acks(Messages) of
+        ok -> io:format("All messages have crossed the process chain.~n", []);
+        timeout -> io:format("Timeout waiting for all messages to cross process chain.~n", [])
+    end,
 
     %% Send a stop message to chain
     First ! {stop, self()},
-    receive_acks([stop]),
+    ok = receive_acks([stop]),
     io:format("The process chain has been torn down.~n", []).
