@@ -33,15 +33,15 @@ loop(Next, Number) -> % forwarder process
     end.
 
 
-spawn_stuff(Number, Next, Acc) when Number > 0 ->
+spawn_stuff(Number, Next) when Number > 0 ->
     Pid = spawn(?MODULE, loop, [Next,Number]),
-    spawn_stuff(Number-1, Pid, [{Number,Pid}|Acc]);
-spawn_stuff(0, Next, Acc) ->
-    {Next, lists:reverse(Acc)}.
+    spawn_stuff(Number-1, Pid);
+spawn_stuff(0, Next) ->
+    Next.
 
 
 spawn_stuff(Number) ->
-    spawn_stuff(Number, none, []).
+    spawn_stuff(Number, none).
 
 
 start() ->
@@ -52,9 +52,8 @@ start([]) ->
     start(["5"]);
 start([NumStr]) ->
     %% Set up chain of processes
-    {First, Processes} = spawn_stuff(list_to_integer(NumStr)),
+    First = spawn_stuff(list_to_integer(NumStr)),
     io:format("First: ~p~n", [First]),
-    io:format("Procs: ~p~n", [Processes]),
 
     %% Send a few messages through the chain
     Messages = ['moo', ['foo', 'bar'], "blah", {42,23}, 'that\'s it!'],
