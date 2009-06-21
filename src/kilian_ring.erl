@@ -11,22 +11,24 @@
 
 loop(none, Number) -> % receiver process
     receive
-        {message, M} ->
+        {message, Sender, M} ->
             io:format("Process ~w/~w: Received message ~w~n",
                       [Number, self(), M]),
+            Sender ! {ack, M},
             loop(none, Number);
-        stop ->
+        {stop, Sender} ->
             io:format("Process ~w/~w: stopping.~n",
-                      [Number, self()])
+                      [Number, self()]),
+            Sender ! {ack, stop}
     end;
 loop(Next, Number) -> % forwarder process
     receive
-        {message, M} = Msg ->
+        {message, _Sender, M} = Msg ->
             io:format("Process ~w/~w: forwarding message to Pid ~w: ~w~n",
                       [Number, self(), Next, M]),
             Next ! Msg,
             loop(Next, Number);
-        stop = Msg ->
+        {stop, _Sender} = Msg ->
             io:format("Process ~w/~w: stopping (forwarding to Pid ~w)~n",
                       [Number, self(), Next]),
             Next ! Msg
@@ -48,6 +50,15 @@ start() ->
     start([]).
 
 
+receive_acks([]) ->
+    ok;
+receive_acks([Head|Tail]) ->
+    receive
+        {ack, Head} -> ok
+    end,
+    receive_acks(Tail).
+
+
 start([]) ->
     start(["5"]);
 start([NumStr]) ->
@@ -57,13 +68,11 @@ start([NumStr]) ->
 
     %% Send a few messages through the chain
     Messages = ['moo', ['foo', 'bar'], "blah", {42,23}, 'that\'s it!'],
-    [ First ! {message, M} || M <- Messages ],
-    receive % BUG: Race condition.
-        after 2000 -> ok
-    end,
+    [ First ! {message, self(), M} || M <- Messages ],
+    receive_acks(Messages),
+    io:format("All messages have crossed the process chain.~n", []),
 
     %% Send a stop message to chain
-    First ! stop,
-    receive % BUG: Race condition.
-        after 2000 -> ok
-    end.
+    First ! {stop, self()},
+    receive_acks([stop]),
+    io:format("The process chain has been torn down.~n", []).
