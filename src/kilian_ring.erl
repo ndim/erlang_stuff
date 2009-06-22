@@ -1,6 +1,10 @@
-%% Run this program like this:
-%%   $ erl -noshell -run kilian_ring start -s init stop
-%%   $ erl -noshell -run kilian_ring start 13 -s init stop
+%% kilian_ring.erl - Send a bunch of messages through a chain of processes
+%% Inspired by an idea from someone going by the nick of "kilian_" on #erlang.
+%%
+%% Run this program as follows:
+%%   $ erl -noshell -s kilian_ring start -s init stop
+%%   $ erl -noshell -s kilian_ring start 13 -s init stop
+%%   $ erl -noshell -s kilian_ring start 5000 -s init stop > log.txt
 
 -module(kilian_ring).
 
