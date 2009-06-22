@@ -4,7 +4,7 @@ Compile:
   $ erl -make
 
 Run:
-  $ erl -noshell -pa beam -run foo bar -s init stop
+  $ erl -noshell -pa beam -s foo bar -s init stop
 
 Example:
-  $ erl -make && erl -noshell -pa beam -run kilian_ring start -s init stop
+  $ erl -make && erl -noshell -pa beam -s kilian_ring test -s init stop

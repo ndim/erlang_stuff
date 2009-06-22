@@ -2,14 +2,15 @@
 %% Inspired by an idea from someone going by the nick of "kilian_" on #erlang.
 %%
 %% Run this program as follows:
-%%   $ erl -noshell -s kilian_ring start -s init stop
-%%   $ erl -noshell -s kilian_ring start 13 -s init stop
-%%   $ erl -noshell -s kilian_ring start 5000 -s init stop > log.txt
+%%   $ erl -noshell -s kilian_ring test -s init stop
+%%   $ erl -noshell -s kilian_ring test 13 -s init stop
+%%   $ erl -noshell -s kilian_ring test 5000 -s init stop > log.txt
+
 
 -module(kilian_ring).
 
 
--export([start/0, start/1]).
+-export([test/0, test/1]).
 -export([loop/2]).
 
 
@@ -63,17 +64,17 @@ spawn_chain(Number) ->
     spawn_chain(Number, none).
 
 
-start() ->
-    start([]).
+test() ->
+    test([]).
 
 
-start([]) ->
-    start(["5"]);
-start([NumAtom]) when is_atom(NumAtom) ->
-    start([atom_to_list(NumAtom)]);
-start([NumStr]) when is_list(NumStr) ->
-    start([list_to_integer(NumStr)]);
-start([Number]) when is_integer(Number) ->
+test([]) ->
+    test(["5"]);
+test([NumAtom]) when is_atom(NumAtom) ->
+    test([atom_to_list(NumAtom)]);
+test([NumStr]) when is_list(NumStr) ->
+    test([list_to_integer(NumStr)]);
+test([Number]) when is_integer(Number) ->
     %% Set up chain of processes
     First = spawn_chain(Number),
     io:format("First: ~p~n", [First]),
