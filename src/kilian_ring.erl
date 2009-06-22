@@ -80,5 +80,7 @@ start([NumStr]) ->
 
     %% Send a stop message to chain
     First ! {stop, self()},
-    ok = receive_acks([stop]),
-    io:format("The process chain has been torn down.~n", []).
+    case receive_acks(5000, [stop]) of
+        ok -> io:format("The process chain has been torn down.~n", []);
+        timeout -> io:format("The process chain teardown has timed out.~n", [])
+    end.
