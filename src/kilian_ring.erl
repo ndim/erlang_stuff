@@ -35,10 +35,6 @@ loop(Next, Number) -> % forwarder process
     end.
 
 
-start() ->
-    start([]).
-
-
 receive_acks(_Timeout, []) ->
     ok;
 receive_acks(Timeout, [Head|Tail]) ->
@@ -63,11 +59,19 @@ spawn_chain(Number) ->
     spawn_chain(Number, none).
 
 
+start() ->
+    start([]).
+
+
 start([]) ->
     start(["5"]);
-start([NumStr]) ->
+start([NumAtom]) when is_atom(NumAtom) ->
+    start([atom_to_list(NumAtom)]);
+start([NumStr]) when is_list(NumStr) ->
+    start([list_to_integer(NumStr)]);
+start([Number]) when is_integer(Number) ->
     %% Set up chain of processes
-    First = spawn_chain(list_to_integer(NumStr)),
+    First = spawn_chain(Number),
     io:format("First: ~p~n", [First]),
 
     %% Send a few messages through the chain
