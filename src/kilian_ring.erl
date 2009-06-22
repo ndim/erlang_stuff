@@ -64,17 +64,8 @@ spawn_chain(Number) ->
     spawn_chain(Number, none).
 
 
-test() ->
-    test([]).
 
-
-test([]) ->
-    test(["5"]);
-test([NumAtom]) when is_atom(NumAtom) ->
-    test([atom_to_list(NumAtom)]);
-test([NumStr]) when is_list(NumStr) ->
-    test([list_to_integer(NumStr)]);
-test([Number]) when is_integer(Number) ->
+test_chain(Number) ->
     %% Set up chain of processes
     First = spawn_chain(Number),
     io:format("First: ~p~n", [First]),
@@ -93,3 +84,18 @@ test([Number]) when is_integer(Number) ->
         ok -> io:format("The process chain has been torn down.~n", []);
         timeout -> io:format("The process chain teardown has timed out.~n", [])
     end.
+
+
+test() ->
+    test([]).
+
+
+test([]) ->
+    test([5]);
+test([NumAtom]) when is_atom(NumAtom) ->
+    test([atom_to_list(NumAtom)]);
+test([NumStr]) when is_list(NumStr) ->
+    test([list_to_integer(NumStr)]);
+test([Number]) when is_integer(Number) ->
+    test_chain(Number).
+
