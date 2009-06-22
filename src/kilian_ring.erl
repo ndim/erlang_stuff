@@ -16,10 +16,10 @@
 
 loop(none, Number) -> % receiver process
     receive
-        {message, Sender, M} ->
+        {message, Sender, Content} ->
             io:format("Process ~w/~w: Received message ~w~n",
-                      [Number, self(), M]),
-            Sender ! {ack, M},
+                      [Number, self(), Content]),
+            Sender ! {ack, Content},
             loop(none, Number);
         {stop, Sender} ->
             io:format("Process ~w/~w: stopping.~n",
@@ -28,9 +28,9 @@ loop(none, Number) -> % receiver process
     end;
 loop(Next, Number) -> % forwarder process
     receive
-        {message, _Sender, M} = Msg ->
+        {message, _Sender, Content} = Msg ->
             io:format("Process ~w/~w: forwarding message to Pid ~w: ~w~n",
-                      [Number, self(), Next, M]),
+                      [Number, self(), Next, Content]),
             Next ! Msg,
             loop(Next, Number);
         {stop, _Sender} = Msg ->
