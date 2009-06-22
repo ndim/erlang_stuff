@@ -35,17 +35,6 @@ loop(Next, Number) -> % forwarder process
     end.
 
 
-spawn_stuff(Number, Next) when Number > 0 ->
-    Pid = spawn(?MODULE, loop, [Next,Number]),
-    spawn_stuff(Number-1, Pid);
-spawn_stuff(0, Next) ->
-    Next.
-
-
-spawn_stuff(Number) ->
-    spawn_stuff(Number, none).
-
-
 start() ->
     start([]).
 
@@ -63,11 +52,22 @@ receive_acks(Messages) ->
     receive_acks(1000, Messages).
 
 
+spawn_chain(Number, Next) when Number > 0 ->
+    Pid = spawn(?MODULE, loop, [Next,Number]),
+    spawn_chain(Number-1, Pid);
+spawn_chain(0, Next) ->
+    Next.
+
+
+spawn_chain(Number) ->
+    spawn_chain(Number, none).
+
+
 start([]) ->
     start(["5"]);
 start([NumStr]) ->
     %% Set up chain of processes
-    First = spawn_stuff(list_to_integer(NumStr)),
+    First = spawn_chain(list_to_integer(NumStr)),
     io:format("First: ~p~n", [First]),
 
     %% Send a few messages through the chain
