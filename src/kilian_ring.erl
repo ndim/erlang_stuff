@@ -1,5 +1,8 @@
 %% kilian_ring.erl - Send a bunch of messages through a chain of processes
-%% Inspired by an idea from someone going by the nick of "kilian_" on #erlang.
+%% Program written from scratch to implement an idea from someone going by
+%% the nickname of "kilian_" on #erlang and presenting
+%%   http://paste.lisp.org/display/82236
+%% as his solution.
 %%
 %% Run this program as follows:
 %%   $ erl -noshell -s kilian_ring test -s init stop
