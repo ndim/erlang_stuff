@@ -71,7 +71,9 @@ test_chain(Number) ->
     io:format("First: ~p~n", [First]),
 
     %% Send a few messages through the chain
-    Messages = ['moo', ['foo', 'bar'], "blah", {42,23}, 'that\'s it!'],
+    RawMessages = ['moo', ['foo', 'bar'], "blah", {42,23}, 'that\'s it!'],
+    {Messages, _} = lists:mapfoldl(fun(X, Count) -> {{Count, X}, Count+1} end,
+                                   1, RawMessages),
     [ First ! {message, self(), M} || M <- Messages ],
     case receive_acks(Messages) of
         ok -> io:format("All messages have crossed the process chain.~n", []);
