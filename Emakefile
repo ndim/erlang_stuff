@@ -1,1 +1,1 @@
-{"src/*", [{outdir, "beam"}]}.
+{"src/*", [{outdir, "ebin"}]}.
