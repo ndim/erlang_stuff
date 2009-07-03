@@ -6,7 +6,6 @@
 -export([start/0]).
 -export([mutate/1, mutate/2]).
 
-
 -define(DEFAULT_ALPHABET, "ACGT").
 
 
@@ -35,7 +34,7 @@ mutate(OrigSequence) ->
 %% Run example.
 example(OrigSequence) ->
     Mutations = mutate(OrigSequence),
-    io:format("Mutations of orig sequence ~p for default alphabet:~n"
+    io:format("Mutations of orig sequence ~p for default alphabet ~p:~n"
 	      "  ~p~n",
 	      [OrigSequence, ?DEFAULT_ALPHABET,
 	       Mutations]).
