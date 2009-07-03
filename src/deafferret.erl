@@ -7,6 +7,9 @@
 -export([mutate/1, mutate/2]).
 
 
+-define(DEFAULT_ALPHABET, "ACGT").
+
+
 %% BUG: If the OrigSequence contains elements not in Alphabet -> wrong result.
 %% FIXME: We are using ++ in two places, which mostly is not a good idea.
 %% NOTE: We return the results in a very strange kind of "ordering".
@@ -32,10 +35,11 @@ mutate(OrigSequence) ->
 %% Run example.
 example(OrigSequence) ->
     Mutations = mutate(OrigSequence),
-    io:format("Mutations of orig sequence ~p for dictionary ~p:~n"
+    io:format("Mutations of orig sequence ~p for default alphabet:~n"
 	      "  ~p~n",
-	      [OrigSequence, Alphabet,
+	      [OrigSequence, ?DEFAULT_ALPHABET,
 	       Mutations]).
 
+%% Run a few examples.
 start() ->
     [ example(X) || X <- ["CATTAG", "AAAA"] ].
