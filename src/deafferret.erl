@@ -5,17 +5,20 @@
 
 
 %% BUG: If the OrigSequence contains elements not in Dict -> wrong result.
+%% FIXME: We are using ++ in two places, which mostly is not a good idea.
+%% NOTE: We return the results in a very strange kind of "ordering".
+%% NOTE: A simple test case of "AAAA" will not give you 
 
 
-%% Verbose version
+%% Verbose version. Comment out the io:format stuff for a mute version.
 mutate([], _Dict, _Prefix, Acc) ->
-    lists:reverse(Acc);
+    lists:append(Acc);
 mutate([Base|Suffix]=_OrigSequence, Dict, Prefix, Acc) ->
     io:format("mutate(~p,~p,~p,~p)~n", [_OrigSequence,Dict,Prefix,Acc]),
     NewMutations = [Prefix++[X|Suffix] || X<-Dict, X=/=Base],
     io:format("  new: ~p~n", [NewMutations]),
-    mutate(Suffix, Dict, [Base|Prefix],
-	   lists:foldl(fun(El,Ac) -> [El|Ac] end, Acc, NewMutations)).
+    mutate(Suffix, Dict, Prefix++[Base], [NewMutations|Acc]).
+
 
 mutate(OrigSequence, Dict) ->
     mutate(OrigSequence, Dict, "", []).
