@@ -1,3 +1,6 @@
+%% deafferret.erl - mutate a sequence of bases in a single place
+%% Written with and for deafferret on freenode/#erlang.
+
 -module(deafferret).
 
 -export([start/0]).
