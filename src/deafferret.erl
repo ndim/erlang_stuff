@@ -8,38 +8,40 @@
 %% Mute version
 m([], _Dict, _Prefix, Acc) ->
     lists:reverse(Acc);
-m([Cur|Suffix]=G, Dict, Prefix, Acc) ->
-    m(Suffix, Dict, [Cur|Prefix],
+m([Base|Suffix]=OrigSequence, Dict, Prefix, Acc) ->
+    m(Suffix, Dict, [Base|Prefix],
       lists:foldl(fun(El,Ac) -> [El|Ac] end, Acc,
-		  [Prefix++[X|Suffix] || X<-Dict, X=/=Cur])).
+		  [Prefix++[X|Suffix] || X<-Dict, X=/=Base])).
 
-m(Given, Dict) ->
-    m(Given, Dict, "", []).
+m(OrigSequence, Dict) ->
+    m(OrigSequence, Dict, "", []).
 
-m(Given) ->
-    m(Given, "ACGT").
+m(OrigSequence) ->
+    m(OrigSequence, "ACGT").
 
 
 %% Verbose version
 mutate([], _Dict, _Prefix, Acc) ->
     lists:reverse(Acc);
-mutate([Cur|Suffix]=G, Dict, Prefix, Acc) ->
+mutate([Base|Suffix]=G, Dict, Prefix, Acc) ->
     io:format("mutate(~p,~p,~p,~p)~n", [G,Dict,Prefix,Acc]),
-    NewMutations = [Prefix++[X|Suffix] || X<-Dict, X=/=Cur],
+    NewMutations = [Prefix++[X|Suffix] || X<-Dict, X=/=Base],
     io:format("  new: ~p~n", [NewMutations]),
-    mutate(Suffix, Dict, [Cur|Prefix],
+    mutate(Suffix, Dict, [Base|Prefix],
 	   lists:foldl(fun(El,Ac) -> [El|Ac] end, Acc, NewMutations)).
 
-mutate(Given, Dict) ->
-    mutate(Given, Dict, "", []).
+mutate(OrigSequence, Dict) ->
+    mutate(OrigSequence, Dict, "", []).
 
-mutate(Given) ->
-    mutate(Given, "ACGT").
+mutate(OrigSequence) ->
+    mutate(OrigSequence, "ACGT").
 
 
 %% Run example.
-start() ->
+example(OrigSequence) ->
     Dict = "ACGT",
-    Given = "GCAT",
-    Mutations = mutate(Given, Dict),
-    io:format("Mutations of ~p for base ~p:~n  ~p~n", [Given, Dict, Mutations]).
+    Mutations = mutate(OrigSequence, Dict),
+    io:format("Mutations of ~p for base ~p:~n  ~p~n", [OrigSequence, Dict, Mutations]).
+
+start() ->
+    [ example(X) || X <- ["CATTAG", "AAAA"] ].
