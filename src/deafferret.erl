@@ -26,8 +26,8 @@ m(OrigSequence) ->
 %% Verbose version
 mutate([], _Dict, _Prefix, Acc) ->
     lists:reverse(Acc);
-mutate([Base|Suffix]=OrigSequence, Dict, Prefix, Acc) ->
-    io:format("mutate(~p,~p,~p,~p)~n", [OrigSequence,Dict,Prefix,Acc]),
+mutate([Base|Suffix]=_OrigSequence, Dict, Prefix, Acc) ->
+    io:format("mutate(~p,~p,~p,~p)~n", [_OrigSequence,Dict,Prefix,Acc]),
     NewMutations = [Prefix++[X|Suffix] || X<-Dict, X=/=Base],
     io:format("  new: ~p~n", [NewMutations]),
     mutate(Suffix, Dict, [Base|Prefix],
