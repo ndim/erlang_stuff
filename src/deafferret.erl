@@ -22,7 +22,6 @@ mutate([Base|Suffix]=_OrigSequence, Alphabet, Prefix, Acc) ->
     io:format("  new: ~p~n", [NewMutations]),
     mutate(Suffix, Alphabet, Prefix++[Base], [NewMutations|Acc]).
 
-
 mutate(OrigSequence, Alphabet) ->
     mutate(OrigSequence, Alphabet, "", []).
 
