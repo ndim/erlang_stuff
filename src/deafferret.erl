@@ -2,25 +2,9 @@
 
 -export([start/0]).
 -export([mutate/1, mutate/2]).
--export([m/1, m/2]).
 
 
 %% BUG: If the OrigSequence contains elements not in Dict -> wrong result.
-
-
-%% Mute version
-m([], _Dict, _Prefix, Acc) ->
-    lists:reverse(Acc);
-m([Base|Suffix], Dict, Prefix, Acc) ->
-    m(Suffix, Dict, [Base|Prefix],
-      lists:foldl(fun(El,Ac) -> [El|Ac] end, Acc,
-		  [Prefix++[X|Suffix] || X<-Dict, X=/=Base])).
-
-m(OrigSequence, Dict) ->
-    m(OrigSequence, Dict, "", []).
-
-m(OrigSequence) ->
-    m(OrigSequence, "ACGT").
 
 
 %% Verbose version
