@@ -7,7 +7,7 @@
 %% BUG: If the OrigSequence contains elements not in Dict -> wrong result.
 %% FIXME: We are using ++ in two places, which mostly is not a good idea.
 %% NOTE: We return the results in a very strange kind of "ordering".
-%% NOTE: A simple test case of "AAAA" will not give you 
+%% NOTE: A simple test case of "AAAA" lets you miss permutated characters.
 
 
 %% Verbose version. Comment out the io:format stuff for a mute version.
