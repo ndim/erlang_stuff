@@ -5,6 +5,9 @@
 -export([m/1, m/2]).
 
 
+%% BUG: If the OrigSequence contains elements not in Dict -> wrong result.
+
+
 %% Mute version
 m([], _Dict, _Prefix, Acc) ->
     lists:reverse(Acc);
