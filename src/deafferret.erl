@@ -25,7 +25,7 @@ mutate([Base|Suffix]=_OrigSequence, Alphabet, Prefix, Acc) ->
     mutate(Suffix, Alphabet, Prefix++[Base], [NewMutations|Acc]).
 
 mutate(OrigSequence, Alphabet) ->
-    mutate(OrigSequence, Alphabet, "", []).
+    mutate(OrigSequence, Alphabet, [], []).
 
 mutate(OrigSequence) ->
     mutate(OrigSequence, ?DEFAULT_ALPHABET).
