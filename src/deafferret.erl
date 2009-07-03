@@ -44,8 +44,10 @@ mutate(OrigSequence) ->
 example(OrigSequence) ->
     Dict = "ACGT",
     Mutations = mutate(OrigSequence, Dict),
-    io:format("Mutations of orig sequence ~p for dictionary ~p:~n  ~p~n",
-	      [OrigSequence, Dict, Mutations]).
+    io:format("Mutations of orig sequence ~p for dictionary ~p:~n"
+	      "  ~p~n",
+	      [OrigSequence, Dict,
+	       Mutations]).
 
 start() ->
     [ example(X) || X <- ["CATTAG", "AAAA"] ].
