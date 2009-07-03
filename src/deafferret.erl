@@ -28,7 +28,7 @@ mutate(OrigSequence, Alphabet) ->
     mutate(OrigSequence, Alphabet, "", []).
 
 mutate(OrigSequence) ->
-    mutate(OrigSequence, "ACGT").
+    mutate(OrigSequence, ?DEFAULT_ALPHABET).
 
 
 %% Run example.
