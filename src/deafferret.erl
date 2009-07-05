@@ -55,6 +55,7 @@ example(OrigSequence) ->
 	      [OrigSequence, ?DEFAULT_ALPHABET,
 	       Mutations]).
 
+
 %% Run a few examples.
 start() ->
     [ example(X) || X <- ["CATTAG", "AAAA"] ].
