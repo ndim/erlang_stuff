@@ -28,7 +28,8 @@ dummy_register(Count) ->
     receive
         {Sender, request} ->
             Sender ! {reply, Count},
-            dummy_register(Count+1)
+            dummy_register(Count+1);
+	stop -> stopped
     end.
 
 
@@ -44,11 +45,12 @@ to_us(Now) ->
     (Now_Ms*1000000+Now_s)*1000000+Now_us.
 
 
-run_test(Name, Iterations, StartFun, RunFun) ->
+run_test(Name, Iterations, StartFun, RunFun, StopFun) ->
     State = StartFun(),
     StartTime = now(),
     run_test_int(RunFun, State, Iterations),
     EndTime = now(),
+    StopFun(State),
     Delta_us = to_us(EndTime) - to_us(StartTime),
     io:format("~s~n"
 	      "  Start: ~w~n"
@@ -62,7 +64,8 @@ test(Iterations) when is_integer(Iterations) ->
     run_test("NOP test",
 	     Iterations,
 	     fun() -> dummy_state end,
-	     fun(State) -> State end),
+	     fun(State) -> State end,
+             fun(State) -> State end),
     run_test("Ask dummy registry for a number",
 	     Iterations,
 	     fun() -> spawn(?MODULE, dummy_register, [0]) end,
@@ -72,7 +75,10 @@ test(Iterations) when is_integer(Iterations) ->
                          {reply, _Port} -> ok
                      end,
                      Reg
-             end);
+             end,
+	     fun(Reg) ->
+		    Reg ! stop
+	     end);
 test([Atom]) when is_atom(Atom) ->
     test([atom_to_list(Atom)]);
 test([String]) when is_list(String) ->
