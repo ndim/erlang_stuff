@@ -1,5 +1,16 @@
 %% Show how fast sending a message to and receiving an answer back
-%% from a process is.
+%% from a process is:
+%% NOP test
+%%   Start: {1248,709798,73040}
+%%   End:   {1248,709798,155169}
+%%   Delta: 82129 us
+%%   us per iteration: 0.082129
+%% Ask dummy registry for a number
+%%   Start: {1248,709798,155771}
+%%   End:   {1248,709800,227486}
+%%   Delta: 2071715 us
+%%   us per iteration: 2.071715
+
 -module(message_performance).
 
 
@@ -43,8 +54,7 @@ run_test(Name, Iterations, StartFun, RunFun) ->
 	      "  Start: ~w~n"
 	      "  End:   ~w~n"
 	      "  Delta: ~w us~n"
-	      "  us per iteration: ~w~n"
-	      "~n",
+	      "  us per iteration: ~w~n",
 	      [Name, StartTime, EndTime, Delta_us, Delta_us/Iterations]).
 
 
