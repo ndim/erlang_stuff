@@ -4,7 +4,7 @@
 -module(deafferret).
 
 -export([start/0]).
--export([mutate/1, mutate/2]).
+-export([mutate/2, mutate/3]).
 
 -define(DEFAULT_ALPHABET, "ACGT").
 
@@ -32,30 +32,43 @@
 
 
 %% Verbose version. Comment out the io:format stuff for a mute version.
-mutate([], _Alphabet, _Prefix, Acc) ->
+mutate(1, [], _Alphabet, _Prefix, Acc) ->
     lists:append(Acc);
-mutate([Base|Suffix]=_OrigSequence, Alphabet, Prefix, Acc) ->
-    io:format("mutate(~p,~p,~p,~p)~n", [_OrigSequence,Alphabet,Prefix,Acc]),
+mutate(1, [Base|Suffix]=_OrigSequence, Alphabet, Prefix, Acc) ->
+    io:format("mutate(~w,~p,~p,~p,~p)~n", [1,_OrigSequence,Alphabet,Prefix,Acc]),
     NewMutations = [Prefix++[X|Suffix] || X<-Alphabet, X=/=Base],
     io:format("  new: ~p~n", [NewMutations]),
-    mutate(Suffix, Alphabet, Prefix++[Base], [NewMutations|Acc]).
+    mutate(1, Suffix, Alphabet, Prefix++[Base], [NewMutations|Acc]);
 
-mutate(OrigSequence, Alphabet) ->
-    mutate(OrigSequence, Alphabet, [], []).
+mutate(2, [], _Alphabet, _Prefix, Acc) ->
+    lists:append(Acc);
+mutate(2, [Base|Suffix]=_OrigSequence, Alphabet, Prefix, Acc) ->
+    io:format("mutate(~w,~p,~p,~p,~p)~n", [2,_OrigSequence,Alphabet,Prefix,Acc]),
+    RM = mutate(1, Suffix, Alphabet, [], []),
+    io:format("  rec: ~p~n", [RM]),
+    NewMutations =
+	lists:append([[Prefix++[X|S] || X<-Alphabet, X=/=Base] || S <- RM]),
+    io:format("  new: ~p~n", [NewMutations]),
+    mutate(2, Suffix, Alphabet, Prefix++[Base], [NewMutations|Acc]).
 
-mutate(OrigSequence) ->
-    mutate(OrigSequence, ?DEFAULT_ALPHABET).
+
+mutate(N, OrigSequence, Alphabet) ->
+    mutate(N, OrigSequence, Alphabet, [], []).
+
+
+mutate(N, OrigSequence) ->
+    mutate(N, OrigSequence, ?DEFAULT_ALPHABET).
 
 
 %% Run example.
-example(OrigSequence) ->
-    Mutations = mutate(OrigSequence),
-    io:format("Mutations of orig sequence ~p for default alphabet ~p:~n"
-	      "  ~p~n",
-	      [OrigSequence, ?DEFAULT_ALPHABET,
+example(N, OrigSequence) ->
+    Mutations = mutate(N, OrigSequence),
+    io:format("Mutations of orig sequence ~p in ~w places for default alphabet ~p:~n"
+	      "  ~p~n~n",
+	      [OrigSequence, N, ?DEFAULT_ALPHABET,
 	       Mutations]).
 
 
 %% Run a few examples.
 start() ->
-    [ example(X) || X <- ["CATTAG", "AAAA"] ].
+    [ example(N, X) || N <- [1], X <- ["CATTAG", "AAAA", "TCG", "AC", "T"] ].
